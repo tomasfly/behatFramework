@@ -1,4 +1,6 @@
 vendor/
 bin/
+features/bootstrap/logs
 composer.lock
 .project
+.idea

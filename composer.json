@@ -2,6 +2,10 @@
     "require-dev": {
         "behat/behat": "~2.5"
     },
+	"require": {
+        "nategood/httpful": "*",
+		"katzgrau/klogger": "dev-master"
+    },
     "config": {
         "bin-dir": "bin/"
     }
