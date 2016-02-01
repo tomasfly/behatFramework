@@ -21,7 +21,6 @@ class RequestsURL
     {
         $place = new Place($provider_name, $provider_place_id);
         $request = $this->sonar_url . "/" . $place->getProviderName() . "/" . $place->getProviderPlaceId();
-        echo $request;
         $this->setRequest($request);
     }
 

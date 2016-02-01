@@ -23,7 +23,40 @@ class FeatureContext extends BehatContext
     private $provider_place_id;
     private $place;
     private $request_url;
-    private $reponse_code;
+    private $response;
+    private $logger;
+
+    /**
+     * @return mixed
+     */
+    public function getResponse()
+    {
+        return $this->response;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+
+    /**
+     * @param mixed $logger
+     */
+    public function setLogger($logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
+     * @param mixed $response
+     */
+    public function setResponse($response)
+    {
+        $this->response = $response;
+    }
 
 
     /**
@@ -99,38 +132,43 @@ class FeatureContext extends BehatContext
      */
     public function __construct(array $parameters)
     {
+        $logger = new Katzgrau\KLogger\Logger(__DIR__ . '/logs');
+        $this->setLogger($logger);
 
     }
 
     /**
      * @Given /^provider name is "([^"]*)"$/
-     */
-    public function providerNameIs($arg1)
-    {
-        $this->setProviderName($arg1);
-
-    }
+     * //     */
+//    public function providerNameIs($provider_name)
+//    {
+//        $this->setProviderName($provider_name);
+//
+//    }
 
     /**
      * @Given /^provider place id is "([^"]*)"$/
      */
-    public function providerPlaceIdIs($arg1)
-    {
-        $this->setProviderPlaceId($arg1);
-    }
+//    public function providerPlaceIdIs($arg1)
+//    {
+//        $this->setProviderPlaceId($arg1);
+//    }
 
     /**
      * @When /^I send request using GET method$/
      */
     public function iSendRequestUsingGetMethod()
     {
+
         $name = $this->getProviderName();
         $place = $this->getProviderPlaceId();
         $request = new RequestsURL($name, $place);
         $request->getRequest();
-        echo $request;
+        $this->getLogger()->INFO('Sending request: ' . $request);
         $con = new Connection();
         $con->sendRequest($request);
+        $response = $con->getResponse();
+        $this->setResponse($response);
     }
 
     /**
@@ -138,6 +176,34 @@ class FeatureContext extends BehatContext
      */
     public function responseCodeIs($arg1)
     {
-        //throw new PendingException ();
+        $response = $this->getResponse();
+        $response_code = $response->body->meta->code;
+        if ($response_code == $arg1) {
+
+            $this->getLogger()->INFO('Status code ' . $response_code . ' is expected');
+        } else {
+
+            $this->getLogger()->INFO('Status code ' . $response_code . ' is not expected');
+            PHPUnit_Framework_Assert::assertEquals($arg1, $response_code,
+                "The response is not the same, should be " . $arg1 . " but is " . $response_code);
+        }
     }
+
+    /**
+     * @Given /^provider name is (.*)$/
+     */
+    public function providerNameIs($PROVIDER_NAME)
+    {
+        $this->setProviderName($PROVIDER_NAME);
+    }
+
+    /**
+     * @Given /^provider place id is (.*)$/
+     */
+    public function providerPlaceIdIs($PROVIDER_PLACE_ID)
+    {
+        $this->setProviderPlaceId($PROVIDER_PLACE_ID);
+    }
+
+
 }

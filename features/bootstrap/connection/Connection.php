@@ -9,6 +9,24 @@
 class Connection
 {
 
+    private $response;
+
+    /**
+     * @return mixed
+     */
+    public function getResponse()
+    {
+        return $this->response;
+    }
+
+    /**
+     * @param mixed $response
+     */
+    public function setResponse($response)
+    {
+        $this->response = $response;
+    }
+
     /**
      * Connection constructor.
      */
@@ -16,17 +34,13 @@ class Connection
     {
     }
 
-    public static function sendRequest($request, $method="GET")
+    public function sendRequest($request, $method = "GET")
     {
         $url = $request;
         $response = \Httpful\Request::get($url)
             ->expectsJson()
-            ->withXTrivialHeader('Just as a demo')
             ->send();
-        echo "{$response->body->meta->code}";
-        echo "{$response->body->data->provider_id}";
-        $response_code = $response->body->meta->code;
-        echo "response code is" . $response_code;
+        $this->setResponse($response);
     }
 
 }
