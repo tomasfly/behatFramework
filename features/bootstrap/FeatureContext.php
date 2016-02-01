@@ -157,19 +157,28 @@ class FeatureContext extends BehatContext
     /**
      * @When /^I send request using GET method$/
      */
-    public function iSendRequestUsingGetMethod()
+    public function iSendRequestUsingGetMethod($arg1)
     {
 
+
+    }
+
+    /**
+     * @When /^I send request using "([^"]*)" method$/
+     */
+    public function iSendRequestUsingMethod($arg1)
+    {
         $name = $this->getProviderName();
         $place = $this->getProviderPlaceId();
         $request = new RequestsURL($name, $place);
         $request->getRequest();
         $this->getLogger()->INFO('Sending request: ' . $request);
         $con = new Connection();
-        $con->sendRequest($request);
+        $con->sendRequest($request,$arg1);
         $response = $con->getResponse();
         $this->setResponse($response);
     }
+
 
     /**
      * @Then /^response code is "([^"]*)"$/
@@ -233,7 +242,7 @@ class FeatureContext extends BehatContext
             $value = $row[1];
             $value_from_response = $response->body->data->$key;
             if ($value == $value_from_response) {
-                $this->getLogger()->INFO('Value ' . $value . "matches" . $value);
+                $this->getLogger()->INFO('Value ' . $value . "matches" . $value_from_response);
 
             } else {
                 PHPUnit_Framework_Assert::fail("Values dont match. Check table in feature.");
@@ -244,5 +253,15 @@ class FeatureContext extends BehatContext
 
     }
 
+    /**
+     * @Given /^I save UUID$/
+     */
+    public function iSaveUuid()
+    {
+        $response = $this->getResponse();
+        $uuid = $response->body->data->id;
+        $this->setProviderPlaceId($uuid);
+
+    }
 
 }

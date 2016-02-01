@@ -34,13 +34,32 @@ class Connection
     {
     }
 
-    public function sendRequest($request, $method = "GET")
+    public function sendRequest($request, $method)
     {
-        $url = $request;
-        $response = \Httpful\Request::get($url)
-            ->expectsJson()
-            ->send();
-        $this->setResponse($response);
+        if ($method == "GET") {
+            $url = $request;
+            $response = \Httpful\Request::get($url)
+                ->expectsJson()
+                ->send();
+            $this->setResponse($response);
+        }
+
+        if ($method == "PUT") {
+            $url = $request;
+            $response = \Httpful\Request::put($url)
+                ->expectsJson()
+                ->send();
+            $this->setResponse($response);
+        }
+
+        if ($method == "DELETE") {
+            $url = $request;
+            $response = \Httpful\Request::delete($url)
+                ->expectsJson()
+                ->send();
+            $this->setResponse($response);
+        }
+
     }
 
 }
