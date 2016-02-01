@@ -11,6 +11,9 @@ BDD project which has as a main goal to perform Automation Testing on Sonar Serv
 # Test execution
 Execute command: behat/behat in linux or bin\behat.bat in Windows
 
+In order to run sanity test:
+bin\behat.bat @sanity
+
 # Notes 
 * Project developed with Windows 7 OS.
 * PHP version: 7.0.2
