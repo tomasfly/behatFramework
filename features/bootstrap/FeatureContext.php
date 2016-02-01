@@ -205,5 +205,44 @@ class FeatureContext extends BehatContext
         $this->setProviderPlaceId($PROVIDER_PLACE_ID);
     }
 
+    /**
+     * @Then /^JSON contains the following data:$/
+     */
+    public function jsonContainsTheFollowingData(TableNode $table)
+    {
+        $response = $this->getResponse();
+        foreach ($table->getRows() as $row) {
+            $key = $row[0];
+            try {
+                $response->body->data->$key;
+            } catch (\Behat\Behat\Exception\Exception $e) {
+                PHPUnit_Framework_Assert::fail("not found key is: " . $key);
+            }
+        }
+
+    }
+
+    /**
+     * @Given /^JSON contains the following key value data:$/
+     */
+    public function jsonContainsTheFollowingKeyValueData(TableNode $table)
+    {
+        $response = $this->getResponse();
+        foreach ($table->getRows() as $row) {
+            $key = $row[0];
+            $value = $row[1];
+            $value_from_response = $response->body->data->$key;
+            if ($value == $value_from_response) {
+                $this->getLogger()->INFO('Value ' . $value . "matches" . $value);
+
+            } else {
+                PHPUnit_Framework_Assert::fail("Values dont match. Check table in feature.");
+
+            }
+
+        }
+
+    }
+
 
 }
