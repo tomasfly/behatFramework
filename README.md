@@ -4,7 +4,7 @@ BDD project which has as a main goal to perform Automation Testing on Sonar Serv
 
 # Installation
 
-1. Clone repository https://bitbucket.org/tomas_fly_ar/tfleiderman-test-qaautomation
+1. Clone repository : git clone https://tomas_fly_ar@bitbucket.org/tomas_fly_ar/tfleiderman-test-qaautomation.git
 2. Execute: curl http://getcomposer.org/installer | php
 3. Execute: php composer.phar install 
 
