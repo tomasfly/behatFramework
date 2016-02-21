@@ -1,5 +1,6 @@
 <?php
 use Behat\Behat\Context\ClosuredContextInterface, Behat\Behat\Context\TranslatedContextInterface, Behat\Behat\Context\BehatContext;
+use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\PyStringNode, Behat\Gherkin\Node\TableNode;
 
 //
@@ -16,7 +17,7 @@ require_once 'connection/Connection.php';
 require_once 'model/RequestsURL.php';
 require_once 'model/Place.php';
 
-class FeatureContext implements \Behat\Behat\Context\Context
+class FeatureContext implements \Behat\Behat\Context\Context, SnippetAcceptingContext
 {
 
     private $provider_name;
@@ -140,6 +141,19 @@ class FeatureContext implements \Behat\Behat\Context\Context
     /**
      * @BeforeScenario @deleteplace
      */
+    public function deletePlaceBefore()
+    {
+        $this->deletePlace();
+    }
+
+    /**
+     * @AfterScenario @deleteplace
+     */
+    public function deletePlaceAfter()
+    {
+        $this->deletePlace();
+    }
+
     public function deletePlace()
     {
         $this->setProviderPlaceId("96980666115");
@@ -151,31 +165,6 @@ class FeatureContext implements \Behat\Behat\Context\Context
         $this->iSendRequestUsingMethod("DELETE");
     }
 
-    /**
-     * @Given /^provider name is "([^"]*)"$/
-     * //     */
-//    public function providerNameIs($provider_name)
-//    {
-//        $this->setProviderName($provider_name);
-//
-//    }
-
-    /**
-     * @Given /^provider place id is "([^"]*)"$/
-     */
-//    public function providerPlaceIdIs($arg1)
-//    {
-//        $this->setProviderPlaceId($arg1);
-//    }
-
-    /**
-     * @When /^I send request using GET method$/
-     */
-    public function iSendRequestUsingGetMethod($arg1)
-    {
-
-
-    }
 
     /**
      * @When /^I send request using "([^"]*)" method$/
@@ -188,7 +177,7 @@ class FeatureContext implements \Behat\Behat\Context\Context
         $request->getRequest();
         $this->getLogger()->INFO('Sending request: ' . $request);
         $con = new Connection();
-        $con->sendRequest($request,$arg1);
+        $con->sendRequest($request, $arg1);
         $response = $con->getResponse();
         $this->setResponse($response);
     }
@@ -238,6 +227,8 @@ class FeatureContext implements \Behat\Behat\Context\Context
             $key = $row[0];
             try {
                 $response->body->data->$key;
+                //echo "hola mundo";
+                //echo $response->body->data->source->provider_name;
             } catch (\Symfony\Component\Config\Definition\Exception\Exception $e) {
                 PHPUnit_Framework_Assert::fail("not found key is: " . $key);
             }
@@ -277,5 +268,27 @@ class FeatureContext implements \Behat\Behat\Context\Context
         $this->setProviderPlaceId($uuid);
 
     }
+
+    /**
+     * @Then response contains the following source information
+     */
+    public function responseContainsTheFollowingSourceInformation(TableNode $table)
+    {
+        $response = $this->getResponse();
+        foreach ($table->getRows() as $row) {
+            $key = $row[0];
+            $value = $row[1];
+            $value_from_response = $response->body->data->source->$key;
+            if ($value == $value_from_response) {
+                $this->getLogger()->INFO('Value ' . $value . "matches" . $value_from_response);
+
+            } else {
+                PHPUnit_Framework_Assert::fail("Values dont match. Check table in feature.");
+
+            }
+
+        }
+    }
+
 
 }

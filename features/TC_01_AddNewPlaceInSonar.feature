@@ -13,18 +13,21 @@ Feature: Add a new place to Sonar
     And provider place id is <PROVIDER_PLACE_ID>
     When I send request using "PUT" method
     Then response code is "201"
-    Then JSON contains the following data:
+    And JSON contains the following data:
       | id                 |
       | name               |
       | url                |
       | source             |
       | geopoint           |
       | instagram_location |
+    And response contains the following source information
+      | provider_name | <PROVIDER_NAME> |
+      | name          | <PLACE_NAME>    |
 
     Examples:
-      | PROVIDER_NAME | PROVIDER_PLACE_ID        |
-      | facebook      | 96980666115              |
-      | foursquare    | 4a72174bf964a52055da1fe3 |
+      | PROVIDER_NAME | PROVIDER_PLACE_ID        | PLACE_NAME                     |
+      | facebook      | 96980666115              | Omni Barton Creek Resort & Spa |
+      | foursquare    | 4a72174bf964a52055da1fe3 | Anthropologie                  |
 
   @scenario2
   Scenario Outline: Add a registered place from the provider's information using wrong provider place id
