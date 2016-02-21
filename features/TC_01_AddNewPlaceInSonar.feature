@@ -8,7 +8,7 @@ Feature: Add a new place to Sonar
   @sanity
   @scenario1
   @deleteplace
-  Scenario Outline: Add a registered place from the provider's information for the second time and verify JSON data
+  Scenario Outline: Add a registered place from the provider's information and verify data
     Given provider name is <PROVIDER_NAME>
     And provider place id is <PROVIDER_PLACE_ID>
     When I send request using "PUT" method
@@ -23,11 +23,13 @@ Feature: Add a new place to Sonar
     And response contains the following source information
       | provider_name | <PROVIDER_NAME> |
       | name          | <PLACE_NAME>    |
-
+      | url           | <URL>           |
+    And I send request using "PUT" method
+    Then response code is "200"
     Examples:
-      | PROVIDER_NAME | PROVIDER_PLACE_ID        | PLACE_NAME                     |
-      | facebook      | 96980666115              | Omni Barton Creek Resort & Spa |
-      | foursquare    | 4a72174bf964a52055da1fe3 | Anthropologie                  |
+      | PROVIDER_NAME | PROVIDER_PLACE_ID        | PLACE_NAME                     | URL                                                             |
+      | facebook      | 96980666115              | Omni Barton Creek Resort & Spa | https://www.facebook.com/OmniBartonCreek/                       |
+      | foursquare    | 4a72174bf964a52055da1fe3 | Anthropologie                  | https://foursquare.com/v/anthropologie/4a72174bf964a52055da1fe3 |
 
   @scenario2
   Scenario Outline: Add a registered place from the provider's information using wrong provider place id
