@@ -1,5 +1,5 @@
 <?php
-use Behat\Behat\Context\ClosuredContextInterface, Behat\Behat\Context\TranslatedContextInterface, Behat\Behat\Context\BehatContext, Behat\Behat\Exception\PendingException;
+use Behat\Behat\Context\ClosuredContextInterface, Behat\Behat\Context\TranslatedContextInterface, Behat\Behat\Context\BehatContext;
 use Behat\Gherkin\Node\PyStringNode, Behat\Gherkin\Node\TableNode;
 
 //
@@ -16,7 +16,7 @@ require_once 'connection/Connection.php';
 require_once 'model/RequestsURL.php';
 require_once 'model/Place.php';
 
-class FeatureContext extends BehatContext
+class FeatureContext implements \Behat\Behat\Context\Context
 {
 
     private $provider_name;
@@ -130,11 +130,25 @@ class FeatureContext extends BehatContext
      * @param array $parameters
      *            context parameters (set them up through behat.yml)
      */
-    public function __construct(array $parameters)
+    public function __construct()
     {
         $logger = new Katzgrau\KLogger\Logger(__DIR__ . '/logs');
         $this->setLogger($logger);
 
+    }
+
+    /**
+     * @BeforeScenario @deleteplace
+     */
+    public function deletePlace()
+    {
+        $this->setProviderPlaceId("96980666115");
+        $this->setProviderName("facebook");
+        $this->iSendRequestUsingMethod("DELETE");
+
+        $this->setProviderPlaceId("4a72174bf964a52055da1fe3");
+        $this->setProviderName("foursquare");
+        $this->iSendRequestUsingMethod("DELETE");
     }
 
     /**
@@ -224,7 +238,7 @@ class FeatureContext extends BehatContext
             $key = $row[0];
             try {
                 $response->body->data->$key;
-            } catch (\Behat\Behat\Exception\Exception $e) {
+            } catch (\Symfony\Component\Config\Definition\Exception\Exception $e) {
                 PHPUnit_Framework_Assert::fail("not found key is: " . $key);
             }
         }
