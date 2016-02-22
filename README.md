@@ -12,7 +12,7 @@ BDD project which has as a main goal to perform Automation Testing on Sonar Serv
 Execute command: behat/behat in linux or bin\behat.bat in Windows
 
 In order to run sanity test:
-bin\behat.bat @sanity
+bin\behat.bat --tags @sanity
 
 # Notes 
 * Project developed with Windows 7 OS.
