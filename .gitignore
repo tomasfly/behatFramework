@@ -4,3 +4,4 @@ features/bootstrap/logs
 composer.lock
 .project
 .idea
+*.phar
