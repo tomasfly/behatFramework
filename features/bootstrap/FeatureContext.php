@@ -142,7 +142,15 @@ class FeatureContext implements \Behat\Behat\Context\Context, SnippetAcceptingCo
      */
     public function deletePlaceBefore()
     {
-        $this->deletePlace();
+        $this->genericRequest("DELETE");
+    }
+
+    /**
+     * @BeforeScenario @addPlaces
+     */
+    public function addPlacesBeforeScenario()
+    {
+        $this->genericRequest("PUT");
     }
 
     /**
@@ -150,18 +158,18 @@ class FeatureContext implements \Behat\Behat\Context\Context, SnippetAcceptingCo
      */
     public function deletePlaceAfter()
     {
-        $this->deletePlace();
+        $this->genericRequest("DELETE");
     }
 
-    public function deletePlace()
+    public function genericRequest($method)
     {
         $this->setProviderPlaceId("96980666115");
         $this->setProviderName("facebook");
-        $this->iSendRequestUsingMethod("DELETE");
+        $this->iSendRequestUsingMethod($method);
 
         $this->setProviderPlaceId("4a72174bf964a52055da1fe3");
         $this->setProviderName("foursquare");
-        $this->iSendRequestUsingMethod("DELETE");
+        $this->iSendRequestUsingMethod($method);
     }
 
 
@@ -226,8 +234,6 @@ class FeatureContext implements \Behat\Behat\Context\Context, SnippetAcceptingCo
             $key = $row[0];
             try {
                 $response->body->data->$key;
-                //echo "hola mundo";
-                //echo $response->body->data->source->provider_name;
             } catch (\Symfony\Component\Config\Definition\Exception\Exception $e) {
                 PHPUnit_Framework_Assert::fail("not found key is: " . $key);
             }
@@ -249,10 +255,8 @@ class FeatureContext implements \Behat\Behat\Context\Context, SnippetAcceptingCo
                 $this->getLogger()->INFO('Value ' . $value . "matches" . $value_from_response);
 
             } else {
-                PHPUnit_Framework_Assert::fail("Values dont match. Check table in feature.");
-
+                PHPUnit_Framework_Assert::fail("Values dont match. Expected is: $value but found:$value_from_response  ");
             }
-
         }
 
     }
@@ -282,11 +286,19 @@ class FeatureContext implements \Behat\Behat\Context\Context, SnippetAcceptingCo
                 $this->getLogger()->INFO('Value ' . $value . "matches" . $value_from_response);
 
             } else {
-                PHPUnit_Framework_Assert::fail("Values dont match. Check table in feature.");
+                PHPUnit_Framework_Assert::fail("Values dont match. Expected is: $value but found:$value_from_response  ");
 
             }
 
         }
+    }
+
+    /**
+     * @Then wait a few seconds
+     */
+    public function waitAFewSeconds()
+    {
+        sleep(5);
     }
 
 
