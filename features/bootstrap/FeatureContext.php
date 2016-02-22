@@ -204,7 +204,7 @@ class FeatureContext implements \Behat\Behat\Context\Context, SnippetAcceptingCo
 
             $this->getLogger()->INFO('Status code ' . $response_code . ' is not expected');
             PHPUnit_Framework_Assert::assertEquals($arg1, $response_code,
-                "The response is not the same, should be " . $arg1 . " but is " . $response_code);
+                "The response is not expected, should be " . $arg1 . " but is " . $response_code);
         }
     }
 
@@ -299,6 +299,37 @@ class FeatureContext implements \Behat\Behat\Context\Context, SnippetAcceptingCo
     public function waitAFewSeconds()
     {
         sleep(5);
+    }
+
+    /**
+     * @Then response code is :code with retry
+     */
+    public function responseCodeIsWithRetry($code)
+    {
+        $response = $this->getResponse();
+        $response_code = $response->body->meta->code;
+        if ($response_code == $code) {
+
+            $this->getLogger()->INFO('Status code ' . $response_code . ' is expected');
+        } else {
+
+            sleep(5);
+            $this->iSendRequestUsingMethod("DELETE");
+            sleep(5);
+            $this->iSendRequestUsingMethod("DELETE");
+            $response = $this->getResponse();
+            $response_code = $response->body->meta->code;
+            if ($response_code == $code) {
+
+                $this->getLogger()->INFO('Status code ' . $response_code . ' is expected');
+            } else {
+
+                $this->getLogger()->INFO('Status code ' . $response_code . ' is not expected');
+                PHPUnit_Framework_Assert::assertEquals($code, $response_code,
+                    "The response is not expected, should be " . $code . " but is " . $response_code);
+            }
+
+        }
     }
 
 

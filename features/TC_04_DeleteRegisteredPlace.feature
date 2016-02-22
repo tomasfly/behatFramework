@@ -35,8 +35,7 @@ Feature: Delete a place from Sonar
     When I send request using "DELETE" method
     Then response code is "200"
     And I send request using "GET" method
-    And wait a few seconds
-    And response code is "404"
+    And response code is "404" with retry
     Examples:
       | PROVIDER_NAME | PROVIDER_PLACE_ID        |
       | facebook      | 96980666115              |
