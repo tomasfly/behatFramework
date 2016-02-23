@@ -14,8 +14,10 @@ class RequestsURL
 
     /**
      * RequestsURL constructor.
-     * @param string $sonar_url
-     * @param $request
+     * @param $provider_name
+     * @param $provider_place_id
+     * @internal param string $sonar_url
+     * @internal param $request
      */
     public function __construct($provider_name, $provider_place_id)
     {

@@ -15,7 +15,7 @@ class Place
      * Place constructor.
      * @param $provider_name
      * @param $provider_place_id
-     * @param $uuid
+     * @internal param $uuid
      */
     public function __construct($provider_name, $provider_place_id)
     {

@@ -8,7 +8,7 @@ Feature: Add a new place to Sonar
   @sanity
   @scenario1
   @deleteplace
-  Scenario Outline: Add a registered place from the provider's information and verify data
+  Scenario Outline: Add a registered place from the provider's information and verify response data
     Given provider name is <PROVIDER_NAME>
     And provider place id is <PROVIDER_PLACE_ID>
     When I send request using "PUT" method

@@ -1,6 +1,6 @@
 <?php
 use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\Gherkin\Node\PyStringNode, Behat\Gherkin\Node\TableNode;
+use Behat\Gherkin\Node\TableNode;
 
 //
 // Require 3rd-party libraries here:
@@ -127,8 +127,7 @@ class FeatureContext implements \Behat\Behat\Context\Context, SnippetAcceptingCo
      * Initializes context.
      * Every scenario gets its own context object.
      *
-     * @param array $parameters
-     *            context parameters (set them up through behat.yml)
+     * @internal param array $parameters context parameters (set them up through behat.yml)*            context parameters (set them up through behat.yml)
      */
     public function __construct()
     {
@@ -176,7 +175,7 @@ class FeatureContext implements \Behat\Behat\Context\Context, SnippetAcceptingCo
     /**
      * @When /^I send request using "([^"]*)" method$/
      */
-    public function iSendRequestUsingMethod($arg1)
+    public function iSendRequestUsingMethod($method)
     {
         $name = $this->getProviderName();
         $place = $this->getProviderPlaceId();
@@ -184,7 +183,7 @@ class FeatureContext implements \Behat\Behat\Context\Context, SnippetAcceptingCo
         $request->getRequest();
         $this->getLogger()->INFO('Sending request: ' . $request);
         $con = new Connection();
-        $con->sendRequest($request, $arg1);
+        $con->sendRequest($request, $method);
         $response = $con->getResponse();
         $this->setResponse($response);
     }
@@ -193,18 +192,18 @@ class FeatureContext implements \Behat\Behat\Context\Context, SnippetAcceptingCo
     /**
      * @Then /^response code is "([^"]*)"$/
      */
-    public function responseCodeIs($arg1)
+    public function responseCodeIs($code)
     {
         $response = $this->getResponse();
         $response_code = $response->body->meta->code;
-        if ($response_code == $arg1) {
+        if ($response_code == $code) {
 
             $this->getLogger()->INFO('Status code ' . $response_code . ' is expected');
         } else {
 
             $this->getLogger()->INFO('Status code ' . $response_code . ' is not expected');
-            PHPUnit_Framework_Assert::assertEquals($arg1, $response_code,
-                "The response is not expected, should be " . $arg1 . " but is " . $response_code);
+            PHPUnit_Framework_Assert::assertEquals($code, $response_code,
+                "The response is not expected, should be " . $code . " but is " . $response_code);
         }
     }
 
@@ -244,10 +243,10 @@ class FeatureContext implements \Behat\Behat\Context\Context, SnippetAcceptingCo
     /**
      * @Given /^JSON contains the following key value data:$/
      */
-    public function jsonContainsTheFollowingKeyValueData(TableNode $table)
+    public function jsonContainsTheFollowingKeyValueData(TableNode $data)
     {
         $response = $this->getResponse();
-        foreach ($table->getRows() as $row) {
+        foreach ($data->getRows() as $row) {
             $key = $row[0];
             $value = $row[1];
             $value_from_response = $response->body->data->$key;
@@ -275,10 +274,10 @@ class FeatureContext implements \Behat\Behat\Context\Context, SnippetAcceptingCo
     /**
      * @Then response contains the following source information
      */
-    public function responseContainsTheFollowingSourceInformation(TableNode $table)
+    public function responseContainsTheFollowingSourceInformation(TableNode $data)
     {
         $response = $this->getResponse();
-        foreach ($table->getRows() as $row) {
+        foreach ($data->getRows() as $row) {
             $key = $row[0];
             $value = $row[1];
             $value_from_response = $response->body->data->source->$key;
@@ -331,6 +330,4 @@ class FeatureContext implements \Behat\Behat\Context\Context, SnippetAcceptingCo
 
         }
     }
-
-
 }

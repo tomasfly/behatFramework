@@ -7,7 +7,7 @@ Feature: Get a place from Sonar using UUID
   @scenario9
   @sanity
   @deleteplace
-  Scenario Outline: Get a registered place in Sonar using UUID
+  Scenario Outline: Get a registered place in Sonar using UUID and verify response data
     Given provider name is <PROVIDER_NAME>
     And provider place id is <PROVIDER_PLACE_ID>
     When I send request using "PUT" method
